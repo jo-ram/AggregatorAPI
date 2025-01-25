@@ -1,66 +1,64 @@
-﻿using AggregatorAPI.Models;
+﻿using AggregatorAPI.Interfaces;
+using AggregatorAPI.Models;
 
 namespace AggregatorAPI.Services;
 
-public class AggregationService
+public class AggregationService : IAggregationService
 {
-    private readonly NewsService newsService;
-    private readonly RedditService redditService;
-    private readonly WeatherService weatherService;
-    public AggregationService(NewsService newsService, RedditService redditService, WeatherService weatherService)
+    private readonly INewsService newsService;
+    //private readonly RedditService redditService;
+    private readonly IWeatherService weatherService;
+    public AggregationService(INewsService newsService, /*RedditService redditService,*/ IWeatherService weatherService)
     {
         this.newsService = newsService;
-        this.redditService = redditService;
+        //this.redditService = redditService;
         this.weatherService = weatherService;
     }
 
-    public async Task<AggregatedResult> GetAggregatedDataAsync(string city,string newsQuery, string shortBy, string filter)//,string githubOwner,string githubRepo)
+    public async Task<AggregatedResult> GetAggregatedDataAsync(string city, string newsQuery, string shortBy, string filter)//,string githubOwner,string githubRepo)
     {
-        var weatherTask = await weatherService.GetCurrentWeatherAsync(city);
-        //var newsTask = newsService.GetNewsAsync(newsQuery);
+        var weatherTask = weatherService.GetCurrentWeatherAsync(city);
+        var newsTask = newsService.GetNewsAsync(newsQuery);
         //var githubTask = _githubService.GetRepositoryInfoAsync(githubOwner, githubRepo);
 
-        //var aggregatedResult = await Task.WhenAll(weatherTask);//, newsTask);//, githubTask);
+        await Task.WhenAll(weatherTask, newsTask);//, githubTask);
 
-        var sdjfhsd = string.Empty;
-        var asd = new AggregatedResult
+        var weatherResult = await weatherTask;
+        var newsResult = await newsTask;
+
+        var articles = newsResult.Articles.ToList();
+        if (newsResult != null && (!string.IsNullOrEmpty(shortBy) || !string.IsNullOrEmpty(shortBy)))
+            articles = ApplyFilterAndSortNews(articles, filter, shortBy);
+
+        return new AggregatedResult
         {
-            //Weather = await weatherTask,
-            //News = await newsTask
-            //GitHub = githubTask.Result
+            News = articles,
+            Weather = weatherResult
         };
-
-        //if (aggregatedResult.News.Any() && (!string.IsNullOrEmpty(shortBy) || !string.IsNullOrEmpty(shortBy)))
-        //    aggregatedResult.News = ApplyFilterAndSortNews(aggregatedResult.News, filter, shortBy);
-
-        return asd;
     }
 
-    private List<NewsInfo> ApplyFilterAndSortNews(List<NewsInfo> news, string filter, string sortBy)
+    private List<Article> ApplyFilterAndSortNews(List<Article> news, string filter, string sortBy)
     {
-        var query = news.AsEnumerable();
+        var articles = news.AsEnumerable();
 
         if (!string.IsNullOrWhiteSpace(filter))
         {
             if (filter.Equals("authorName", StringComparison.OrdinalIgnoreCase))
             {
-                query = query.Where(n => n.Articles.Any(a => a.Author.Equals(filter, StringComparison.OrdinalIgnoreCase))).ToList();
+                articles = articles.Where(a => !string.IsNullOrEmpty(a.Author) && a.Author.Equals(filter, StringComparison.OrdinalIgnoreCase));
             }
             else if (filter.Equals("recent", StringComparison.OrdinalIgnoreCase))
             {
                 var cutoff = DateTime.UtcNow.AddDays(-7);
 
-                query = query.Where(n =>
-                    n.Articles != null &&
-                    n.Articles.Any(a =>
+                articles = articles.Where(a =>
+                {
+                    if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
                     {
-                        if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
-                        {
-                            return publishedDate >= cutoff;
-                        }
-                        return false;
-                    })
-                );
+                        return publishedDate >= cutoff;
+                    }
+                    return false;
+                });
             }
         }
 
@@ -68,19 +66,34 @@ public class AggregationService
         {
             if (sortBy.Equals("dateDesc", StringComparison.OrdinalIgnoreCase))
             {
-                query = query.OrderByDescending(n => n.Articles.SelectMany(t => t.PublishedAt));
+                articles = articles.OrderByDescending(a =>
+                {
+                    if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
+                    {
+                        return publishedDate;
+                    }
+                    return DateTime.MinValue;
+                });
             }
             else if (sortBy.Equals("dateAsc", StringComparison.OrdinalIgnoreCase))
             {
-                query = query.OrderBy(n => n.Articles.SelectMany(t => t.PublishedAt));
+                articles = articles.OrderBy(a =>
+                {
+                    if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
+                    {
+                        return publishedDate;
+                    }
+                    return DateTime.MinValue;
+                });
             }
             else if (sortBy.Equals("title", StringComparison.OrdinalIgnoreCase))
             {
-                query = query.OrderBy(n => n.Articles.SelectMany(t => t.Title));
+                articles = articles.OrderBy(a => a.Title);
             }
         }
 
-        return query.ToList();
+        return articles.ToList();
     }
 }
+
 

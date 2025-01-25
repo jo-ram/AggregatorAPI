@@ -2,7 +2,7 @@
 
 namespace AggregatorAPI.Configuration;
 
-public static class SettingsOptions
+public static class SettingsOptionsExtension
 {
     public static void AddOptions(this WebApplicationBuilder builder)
     {

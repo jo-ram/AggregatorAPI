@@ -6,12 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.AddOptions();
 builder.Services.AddHttpClient();
+builder.Services.AddServices();
+builder.Services.AddMemoryCache();
 
 
-builder.Services.AddScoped<NewsService>();
-builder.Services.AddScoped<RedditService>();
-builder.Services.AddScoped<WeatherService>();
-builder.Services.AddScoped<AggregationService>();
+//builder.Services.AddScoped<NewsService>();
+//builder.Services.AddScoped<RedditService>();
+//builder.Services.AddScoped<WeatherService>();
+//builder.Services.AddScoped<AggregationService>();
 
 
 builder.Services.AddControllers();
@@ -20,6 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddOutputCache();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,5 +37,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseOutputCache();
 
 app.Run();

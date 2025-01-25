@@ -1,4 +1,5 @@
-﻿using AggregatorAPI.Services;
+﻿using AggregatorAPI.Interfaces;
+using AggregatorAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AggregatorAPI.Controllers;
@@ -7,8 +8,8 @@ namespace AggregatorAPI.Controllers;
 [ApiController]
 public class AggregationController : ControllerBase
 {
-    private AggregationService aggregationService;  
-    public AggregationController(AggregationService aggregationService)
+    private IAggregationService aggregationService;  
+    public AggregationController(IAggregationService aggregationService)
     {
         this.aggregationService = aggregationService;
     }
@@ -22,7 +23,7 @@ public class AggregationController : ControllerBase
     {
         try
         {
-            var aggregatedData = aggregationService.GetAggregatedDataAsync(searchQueryParam, city, shortBy, filter);
+            var aggregatedData = await aggregationService.GetAggregatedDataAsync(searchQueryParam, city, shortBy, filter);
             return Ok(aggregatedData);
         }
         catch (Exception ex)

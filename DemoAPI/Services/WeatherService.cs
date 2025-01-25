@@ -27,7 +27,7 @@ public class WeatherService : IWeatherService
             //Set default value in case no input from user 
             if (string.IsNullOrEmpty(city)) city = "Greece";
 
-            var cacheKey = $"Weather_{city}";
+            var cacheKey = $"Weather_{city.ToLower()}";
 
             //Retrive from cache if key exists 
             var cachedWeather = _memoryCacheService.Retrieve<WeatherInfo>(cacheKey);
@@ -41,14 +41,25 @@ public class WeatherService : IWeatherService
             var content = await response.Content.ReadAsStringAsync();
             var weatherData = JObject.Parse(content);
 
-            _memoryCacheService.Add(cacheKey, weatherData);
-
-            return weatherData is null ? new WeatherInfo() : new WeatherInfo
+            if(weatherData != null)
             {
-                City = weatherData["name"]?.ToString(),
-                Temperature = (double?)weatherData["main"]?["temp"] ?? 0.0,
-                WeatherDescription = weatherData["weather"]?[0]?["description"]?.ToString()
-            };
+                var weatherResult = new WeatherInfo
+                {
+                    City = weatherData["name"]?.ToString(),
+                    Temperature = (double?)weatherData["main"]?["temp"] ?? 0.0,
+                    WeatherDescription = weatherData["weather"]?[0]?["description"]?.ToString()
+                };
+                _memoryCacheService.Add(cacheKey, weatherResult);
+                return weatherResult;
+            }
+
+            return new WeatherInfo();
+            //return weatherData is null ? new WeatherInfo() : new WeatherInfo
+            //{
+            //    City = weatherData["name"]?.ToString(),
+            //    Temperature = (double?)weatherData["main"]?["temp"] ?? 0.0,
+            //    WeatherDescription = weatherData["weather"]?[0]?["description"]?.ToString()
+            //};
         }
         catch (Exception ex)
         {

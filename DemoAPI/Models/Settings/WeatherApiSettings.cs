@@ -3,5 +3,5 @@
 public class WeatherApiSettings
 {
     public string BaseUrl { get; set; }
-    public string WeatherApiKey { get; set; }
+    public string ApiKey { get; set; }
 }

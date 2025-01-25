@@ -1,5 +1,5 @@
-using AggregatorAPI;
 using AggregatorAPI.Configuration;
+using AggregatorAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +10,8 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<NewsService>();
 builder.Services.AddScoped<RedditService>();
+builder.Services.AddScoped<WeatherService>();
+builder.Services.AddScoped<AggregationService>();
 
 
 builder.Services.AddControllers();

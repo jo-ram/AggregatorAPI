@@ -3,5 +3,5 @@
 public class NewsApiSettings
 {
     public string BaseUrl { get; set; }
-    public string NewsApiKey { get; set; }
+    public string ApiKey { get; set; }
 }

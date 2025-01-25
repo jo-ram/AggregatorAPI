@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace AggregatorAPI;
+namespace AggregatorAPI.Services;
 
 public class RedditService
 {

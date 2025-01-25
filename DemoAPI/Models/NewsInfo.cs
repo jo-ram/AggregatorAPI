@@ -1,9 +1,8 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace AggregatorAPI;
+namespace AggregatorAPI.Models;
 
-public class NewsResponse
+public class NewsInfo
 {
     [JsonPropertyName("status")]
     public string Status { get; set; }
@@ -51,5 +50,5 @@ public class Source
     public string Id { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }   
+    public string Name { get; set; }
 }

@@ -28,15 +28,11 @@ public class NewsService : INewsService
     {
         try
         {
-            //Set default value in case no input from user 
             if (string.IsNullOrEmpty(query)) query = "Election";
-
             var cacheKey = $"News_{query}";
 
-            //Retrive from cache if key exists 
             var cachedNews = _memoryCacheService.Retrieve<NewsInfo>(cacheKey);
-            if (cachedNews != null)
-                return cachedNews;
+            if (cachedNews != null) return cachedNews;
 
             var url = $"{_settings.BaseUrl}?q={query}&language={language}&apiKey={_settings.ApiKey}";
             if (!string.IsNullOrEmpty(category)) url += $"&category={category}";

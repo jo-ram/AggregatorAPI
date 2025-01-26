@@ -36,32 +36,4 @@ public class FilterHelper
 
         return null; // Return null if no valid filter
     }
-
-
-    //public static Func<Article, bool> ParseFilter(string filter)
-    //{
-    //    if (string.IsNullOrEmpty(filter)) return null;
-
-    //    var filterParts = filter.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-    //    if (filterParts.Length != 3) return null;
-
-    //    var field = filterParts[0];
-    //    var operatorSymbol = filterParts[1];
-    //    var value = filterParts[2].Trim('\'');
-
-    //    switch (field.ToLower())
-    //    {
-    //        case "author":
-    //            if (operatorSymbol == "eq")
-    //                return article => article.Author.Equals(value, StringComparison.OrdinalIgnoreCase);
-    //            break;
-
-    //        case "title":
-    //            if (operatorSymbol == "eq")
-    //                return article => article.Title.Equals(value, StringComparison.OrdinalIgnoreCase);
-    //            break;
-    //    }
-
-    //    return null; 
-    //}
 }

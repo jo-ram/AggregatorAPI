@@ -46,8 +46,8 @@ public class Article
 public class Source
 {
 
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
+    //[JsonPropertyName("id")]
+    //public string Id { get; set; }
 
     [JsonPropertyName("name")]
     public string Name { get; set; }

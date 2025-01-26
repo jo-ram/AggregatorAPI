@@ -1,5 +1,4 @@
 ﻿using AggregatorAPI.Interfaces;
-using AggregatorAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AggregatorAPI.Controllers;
@@ -18,12 +17,13 @@ public class AggregationController : ControllerBase
     public async Task<IActionResult> GetAggregatedData(
         [FromQuery] string searchQueryParam, 
         [FromQuery] string city, 
+        [FromQuery] string githubOrgRepo, 
         [FromQuery] string shortBy = null, 
         [FromQuery] string filter = null)
     {
         try
         {
-            var aggregatedData = await aggregationService.GetAggregatedDataAsync(searchQueryParam, city, shortBy, filter);
+            var aggregatedData = await aggregationService.GetAggregatedDataAsync(searchQueryParam, city, shortBy, filter, githubOrgRepo);
             return Ok(aggregatedData);
         }
         catch (Exception ex)

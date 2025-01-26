@@ -1,5 +1,4 @@
 using AggregatorAPI.Configuration;
-using AggregatorAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,20 +8,12 @@ builder.Services.AddHttpClient();
 builder.Services.AddServices();
 builder.Services.AddMemoryCache();
 
-
-//builder.Services.AddScoped<NewsService>();
-//builder.Services.AddScoped<RedditService>();
-//builder.Services.AddScoped<WeatherService>();
-//builder.Services.AddScoped<AggregationService>();
-
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOutputCache();
+//builder.Services.AddOutputCache();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,6 +28,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseOutputCache();
+//app.UseOutputCache();
 
 app.Run();

@@ -6,26 +6,27 @@ namespace AggregatorAPI.Services;
 
 public class AggregationService : IAggregationService
 {
-    private readonly INewsService newsService;
-    private readonly RedditService redditService;
-    private readonly IWeatherService weatherService;
-    public AggregationService(INewsService newsService, /*RedditService redditService,*/ IWeatherService weatherService)
+    private readonly INewsService _newsService;
+    private readonly IGithubService _githubService;
+    private readonly IWeatherService _weatherService;
+    public AggregationService(INewsService newsService, IGithubService githubService, IWeatherService weatherService)
     {
-        this.newsService = newsService;
-        //this.redditService = redditService;
-        this.weatherService = weatherService;
+        _newsService = newsService;
+        _githubService = githubService;
+        _weatherService = weatherService;
     }
 
-    public async Task<AggregatedResult> GetAggregatedDataAsync(string city, string newsQuery, string shortBy, string filter)//,string githubOwner,string githubRepo)
+    public async Task<AggregatedResult> GetAggregatedDataAsync(string city, string newsQuery, string shortBy, string filter, string githubOrgRepo)
     {
-        var weatherTask = weatherService.GetCurrentWeatherAsync(city);
-        var newsTask = newsService.GetNewsAsync(newsQuery);
-        //var githubTask = _githubService.GetRepositoryInfoAsync(githubOwner, githubRepo);
+        var weatherTask = _weatherService.GetCurrentWeatherAsync(city);
+        var newsTask = _newsService.GetNewsAsync(newsQuery);
+        var githubTask = _githubService.GetGithubReposAsync(githubOrgRepo);
 
-        await Task.WhenAll(weatherTask, newsTask);//, githubTask);
+        await Task.WhenAll(weatherTask, newsTask, githubTask);
 
         var weatherResult = await weatherTask;
         var newsResult = await newsTask;
+        var githubResult = await githubTask;
 
         var articles = newsResult.Articles.ToList();
         //if (newsResult != null && (!string.IsNullOrEmpty(shortBy) || !string.IsNullOrEmpty(shortBy)))
@@ -51,66 +52,6 @@ public class AggregationService : IAggregationService
             Weather = weatherResult
         };
     }
-
-
-
-    //private List<Article> ApplyFilterAndSortNews(List<Article> news, string filter, string sortBy)
-    //{
-    //    var articles = news.AsEnumerable();
-
-    //    if (!string.IsNullOrWhiteSpace(filter))
-    //    {
-    //        if (filter.Equals("authorName", StringComparison.OrdinalIgnoreCase))
-    //        {
-    //            articles = articles.Where(a => !string.IsNullOrEmpty(a.Author) && a.Author.Equals(filter, StringComparison.OrdinalIgnoreCase));
-    //        }
-    //        else if (filter.Equals("recent", StringComparison.OrdinalIgnoreCase))
-    //        {
-    //            var cutoff = DateTime.UtcNow.AddDays(-7);
-
-    //            articles = articles.Where(a =>
-    //            {
-    //                if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
-    //                {
-    //                    return publishedDate >= cutoff;
-    //                }
-    //                return false;
-    //            });
-    //        }
-    //    }
-
-    //    if (!string.IsNullOrWhiteSpace(sortBy))
-    //    {
-    //        if (sortBy.Equals("dateDesc", StringComparison.OrdinalIgnoreCase))
-    //        {
-    //            articles = articles.OrderByDescending(a =>
-    //            {
-    //                if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
-    //                {
-    //                    return publishedDate;
-    //                }
-    //                return DateTime.MinValue;
-    //            });
-    //        }
-    //        else if (sortBy.Equals("dateAsc", StringComparison.OrdinalIgnoreCase))
-    //        {
-    //            articles = articles.OrderBy(a =>
-    //            {
-    //                if (DateTime.TryParse(a.PublishedAt, out var publishedDate))
-    //                {
-    //                    return publishedDate;
-    //                }
-    //                return DateTime.MinValue;
-    //            });
-    //        }
-    //        else if (sortBy.Equals("title", StringComparison.OrdinalIgnoreCase))
-    //        {
-    //            articles = articles.OrderBy(a => a.Title);
-    //        }
-    //    }
-
-    //    return articles.ToList();
-    //}
 }
 
 

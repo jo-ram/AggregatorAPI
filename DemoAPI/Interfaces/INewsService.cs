@@ -1,9 +1,8 @@
 ﻿using AggregatorAPI.Models;
 
-namespace AggregatorAPI.Interfaces
+namespace AggregatorAPI.Interfaces;
+
+public interface INewsService
 {
-    public interface INewsService
-    {
-        Task<NewsInfo> GetNewsAsync(string query, string category = null, string language = "en");
-    }
-} 
+    Task<NewsInfo> GetNewsAsync(string query, string category = null, string language = "en");
+}

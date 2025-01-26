@@ -1,9 +1,8 @@
 ﻿using AggregatorAPI.Models;
 
-namespace AggregatorAPI.Interfaces
+namespace AggregatorAPI.Interfaces;
+
+public interface IWeatherService
 {
-    public interface IWeatherService
-    {
-        Task<WeatherInfo> GetCurrentWeatherAsync(string city);
-    }
+    Task<WeatherInfo> GetCurrentWeatherAsync(string city);
 }

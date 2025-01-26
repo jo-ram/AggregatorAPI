@@ -8,8 +8,8 @@ public static class SettingsOptionsExtension
     {
         builder.Services.Configure<WeatherApiSettings>(
                 builder.Configuration.GetSection(nameof(WeatherApiSettings)));
-        builder.Services.Configure<RedditApiSettings>(
-               builder.Configuration.GetSection(nameof(RedditApiSettings)));
+        builder.Services.Configure<GithubApiSettings>(
+               builder.Configuration.GetSection(nameof(GithubApiSettings)));
         builder.Services.Configure<NewsApiSettings>(
                builder.Configuration.GetSection(nameof(NewsApiSettings)));
     }

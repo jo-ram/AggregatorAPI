@@ -9,7 +9,7 @@ public static class ServicesExtension
     {
 
         services.AddTransient<INewsService, NewsService>();
-        services.AddTransient<RedditService>();
+        services.AddTransient<IGithubService, GithubService>();
         services.AddTransient<IWeatherService, WeatherService>();
         services.AddTransient<IAggregationService, AggregationService>();
         services.AddTransient<IMemoryCacheService, MemoryCacheService>();

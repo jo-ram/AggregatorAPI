@@ -4,5 +4,5 @@ public class AggregatedResult
 {
     public WeatherInfo Weather { get; set; }
     public List<Article> News { get; set; }
-    //add third api !!!
+    public List<GithubRepoInfo> GithubRepos { get; set; }
 }

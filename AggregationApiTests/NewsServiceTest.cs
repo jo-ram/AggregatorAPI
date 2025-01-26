@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace AggregationApiTests
 {
-    public class UnitTest1
+    public class NewsServiceTest
     {
         [Fact]
         public async Task GetNewsAsync_ReturnsCachedData_WhenAvailable()

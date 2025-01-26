@@ -9,10 +9,9 @@ public class FilterHelper
     {
         if (string.IsNullOrEmpty(filter)) return null;
 
-        // Trim the filter and handle cases where the filter contains extra spaces
         var filterParts = filter.Split(new[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
 
-        if (filterParts.Length != 3) return null;  // Ensure it splits into exactly 3 parts
+        if (filterParts.Length != 3) return null;  
 
         var field = filterParts[0];
         var operatorSymbol = filterParts[1];
@@ -25,15 +24,12 @@ public class FilterHelper
                     return article => string.Equals(article.Author, value, StringComparison.OrdinalIgnoreCase);
                 break;
 
-            // You can extend this for other fields like title, description, etc.
             case "title":
                 if (operatorSymbol == "eq")
                     return article => string.Equals(article.Title, value, StringComparison.OrdinalIgnoreCase);
                 break;
-
-                // Handle other fields or operators if needed
         }
 
-        return null; // Return null if no valid filter
+        return null; 
     }
 }

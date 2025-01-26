@@ -3,6 +3,7 @@ using AggregatorAPI.Models;
 using AggregatorAPI.Models.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace AggregatorAPI.Services;
 
@@ -12,15 +13,19 @@ public class WeatherService : IWeatherService
     private readonly WeatherApiSettings _settings;
     private readonly IMemoryCacheService _memoryCacheService;
     private readonly IRetryPolicy _retryPolicy;
+    private readonly IStatisticsService _statisticsService;
+
     public WeatherService(HttpClient httpClient, 
         IOptions<WeatherApiSettings> options, 
         IMemoryCacheService memoryCacheService,
-        IRetryPolicy retryPolicy)
+        IRetryPolicy retryPolicy,
+        IStatisticsService statistics)
     {
         _httpClient = httpClient;
         _settings = options.Value;
         _memoryCacheService = memoryCacheService;
         _retryPolicy = retryPolicy;
+        _statisticsService = statistics;
     }
 
     public async Task<WeatherInfo> GetCurrentWeatherAsync(string city)
@@ -38,8 +43,11 @@ public class WeatherService : IWeatherService
                 return cachedWeather;
 
             var requestUrl = $"{_settings.BaseUrl}?q={city}&appid={_settings.ApiKey}&units=metric";
+            var stopwatch = Stopwatch.StartNew();
             HttpResponseMessage result = await _retryPolicy.RetryHttpRequestStandardAsync(requestUrl, async () => await _httpClient.GetAsync(requestUrl));
             //var response = await _httpClient.GetAsync(requestUrl);
+            stopwatch.Stop();
+            _statisticsService.LogRequest("WeatherService", stopwatch.ElapsedMilliseconds);
 
             result.EnsureSuccessStatusCode();
 

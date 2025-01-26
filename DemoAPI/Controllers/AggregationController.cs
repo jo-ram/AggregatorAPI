@@ -23,7 +23,7 @@ public class AggregationController : ControllerBase
     {
         try
         {
-            var aggregatedData = await aggregationService.GetAggregatedDataAsync(searchQueryParam, city, shortBy, filter, githubOrgRepo);
+            var aggregatedData = await aggregationService.GetAggregatedDataAsync(city, searchQueryParam, shortBy, filter, githubOrgRepo);
             return Ok(aggregatedData);
         }
         catch (Exception ex)

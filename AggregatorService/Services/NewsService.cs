@@ -31,14 +31,8 @@ public class NewsService : INewsService
         _statisticsService = statisticsService;
     }
 
-    public HttpClient HttpClient { get; }
-    public IOptions<NewsApiSettings> Options { get; }
-    public IMemoryCacheService Object1 { get; }
-    public IRetryPolicy Object2 { get; }
-
     public async Task<NewsInfo> GetNewsAsync(string query, string category = null, string language = "en")
     {
-        var stopwatch = Stopwatch.StartNew();
         try
         {
             if (string.IsNullOrEmpty(query)) query = "Election";
@@ -50,7 +44,10 @@ public class NewsService : INewsService
             var url = $"{_settings.BaseUrl}?q={query}&language={language}&apiKey={_settings.ApiKey}";
             if (!string.IsNullOrEmpty(category)) url += $"&category={category}";
 
+            var stopwatch = Stopwatch.StartNew();
             HttpResponseMessage result = await _retryPolicy.RetryHttpRequestStandardAsync(url, async () => await _httpClient.GetAsync(url));
+            stopwatch.Stop();
+            _statisticsService.LogRequest("NewsService", stopwatch.ElapsedMilliseconds);
             //var response = await _httpClient.GetAsync(url);
             result.EnsureSuccessStatusCode();
 
@@ -70,11 +67,6 @@ public class NewsService : INewsService
         catch (Exception ex)
         {
             return new NewsInfo();
-        }
-        finally
-        {
-            stopwatch.Stop();
-            _statisticsService.LogRequest("NewsService", stopwatch.ElapsedMilliseconds);
         }
     }
 }

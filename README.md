@@ -52,3 +52,19 @@ https://localhost:7140/api/aggregation/aggregated-data?searchQueryParam=technolo
 
 Example Response
 
+
+
+
+Endpoint
+GET https://localhost:7140/api/statistics/request-statistics
+
+Description
+This endpoint provides statistics for API requests across the application. It includes:
+
+Total number of requests for each service.
+Average response time for requests to each service.
+Performance buckets for response times, categorized as:
+Fast: Response time < 100 ms.
+Average: Response time between 100 ms and 200 ms.
+Slow: Response time > 200 ms.
+

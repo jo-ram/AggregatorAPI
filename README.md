@@ -48,5 +48,7 @@ Language: string - The programming language of the repository.
 Example Request
 URL:
 https://localhost:7140/api/aggregation/aggregated-data?searchQueryParam=technology&city=London&githubOrgRepo=dotnet&shortBy=desc&filter=author eq ''
+
+
 Example Response
 

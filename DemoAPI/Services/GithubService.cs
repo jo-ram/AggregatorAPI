@@ -11,7 +11,10 @@ public class GithubService : IGithubService
     private readonly HttpClient _httpClient;
     private readonly GithubApiSettings _githubApiSettings;
     private readonly IMemoryCacheService _memoryCacheService;
-    public GithubService(HttpClient httpClient, IOptions<GithubApiSettings> options, IMemoryCacheService memoryCacheService)
+    public GithubService(
+        HttpClient httpClient, 
+        IOptions<GithubApiSettings> options, 
+        IMemoryCacheService memoryCacheService)
     {
         _httpClient = httpClient;
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "C# Test app");
@@ -49,12 +52,12 @@ public class GithubService : IGithubService
                 });
             }
 
+            _memoryCacheService.Add(cacheKey, repos);
             return repos;
         }
         catch (Exception ex)
         {
-            return null;
-            // add error handling !!!!
+            return new List<GithubRepoInfo>();
         }
     }
 }

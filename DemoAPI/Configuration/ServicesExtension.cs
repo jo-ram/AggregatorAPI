@@ -1,5 +1,6 @@
 ﻿using AggregatorAPI.Interfaces;
 using AggregatorAPI.Services;
+using AggregatorAPI.Helpers;
 
 namespace AggregatorAPI.Configuration;
 
@@ -13,6 +14,7 @@ public static class ServicesExtension
         services.AddTransient<IWeatherService, WeatherService>();
         services.AddTransient<IAggregationService, AggregationService>();
         services.AddTransient<IMemoryCacheService, MemoryCacheService>();
+        services.AddTransient<IRetryPolicy, RetryPolicy>();
         return services;
     }
 }

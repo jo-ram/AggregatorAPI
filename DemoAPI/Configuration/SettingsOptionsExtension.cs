@@ -12,5 +12,7 @@ public static class SettingsOptionsExtension
                builder.Configuration.GetSection(nameof(GithubApiSettings)));
         builder.Services.Configure<NewsApiSettings>(
                builder.Configuration.GetSection(nameof(NewsApiSettings)));
+        builder.Services.Configure<RetrySettings>(
+              builder.Configuration.GetSection(nameof(RetrySettings)));
     }
 }

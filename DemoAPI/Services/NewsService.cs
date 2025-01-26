@@ -14,7 +14,8 @@ public class NewsService : INewsService
 
     private readonly IMemoryCacheService _memoryCacheService;
 
-    public NewsService(HttpClient httpClient, 
+    public NewsService(
+        HttpClient httpClient, 
         IOptions<NewsApiSettings> options,
         IMemoryCacheService memoryCacheService)
     {
@@ -55,8 +56,7 @@ public class NewsService : INewsService
         }
         catch (Exception ex)
         {
-            // add exception handling !!!
-            return null;
+            return new NewsInfo();
         }
     }
 }

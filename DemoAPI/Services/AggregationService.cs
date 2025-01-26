@@ -1,6 +1,6 @@
 ﻿using AggregatorAPI.Interfaces;
 using AggregatorAPI.Models;
-using AggregatorAPI.Utils;
+using AggregatorAPI.Helpers;
 
 namespace AggregatorAPI.Services;
 
@@ -9,7 +9,10 @@ public class AggregationService : IAggregationService
     private readonly INewsService _newsService;
     private readonly IGithubService _githubService;
     private readonly IWeatherService _weatherService;
-    public AggregationService(INewsService newsService, IGithubService githubService, IWeatherService weatherService)
+    public AggregationService(
+        INewsService newsService, 
+        IGithubService githubService, 
+        IWeatherService weatherService)
     {
         _newsService = newsService;
         _githubService = githubService;
@@ -49,7 +52,8 @@ public class AggregationService : IAggregationService
         return new AggregatedResult
         {
             News = articles,
-            Weather = weatherResult
+            Weather = weatherResult,
+            GithubRepos = githubResult
         };
     }
 }

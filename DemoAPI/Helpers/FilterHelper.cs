@@ -1,6 +1,6 @@
 ﻿using AggregatorAPI.Models;
 
-namespace AggregatorAPI.Utils;
+namespace AggregatorAPI.Helpers;
 
 public class FilterHelper
 {

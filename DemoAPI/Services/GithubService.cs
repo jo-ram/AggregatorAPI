@@ -10,16 +10,19 @@ public class GithubService : IGithubService
 {
     private readonly HttpClient _httpClient;
     private readonly GithubApiSettings _githubApiSettings;
+    private readonly IRetryPolicy _retryPolicy;
     private readonly IMemoryCacheService _memoryCacheService;
     public GithubService(
         HttpClient httpClient, 
         IOptions<GithubApiSettings> options, 
-        IMemoryCacheService memoryCacheService)
+        IMemoryCacheService memoryCacheService,
+        IRetryPolicy retryPolicy)
     {
         _httpClient = httpClient;
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "C# Test app");
         _githubApiSettings = options.Value;
         _memoryCacheService = memoryCacheService;
+        _retryPolicy = retryPolicy;
     }
 
     public async Task<List<GithubRepoInfo>> GetGithubReposAsync(string githubOrg)
@@ -33,10 +36,11 @@ public class GithubService : IGithubService
             var requestUrl = !string.IsNullOrEmpty(githubOrg)
             ? _githubApiSettings.BaseUrl.Replace("{org}", githubOrg) : _githubApiSettings.BaseUrl.Replace("{org}", "dotnet");
 
-            var response = await _httpClient.GetAsync(requestUrl);
-            response.EnsureSuccessStatusCode();
+            HttpResponseMessage result = await _retryPolicy.RetryHttpRequestStandardAsync(requestUrl, async () => await _httpClient.GetAsync(requestUrl));
+            //var response = await _httpClient.GetAsync(requestUrl);
+            result.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await result.Content.ReadAsStringAsync();
             dynamic repoData = JsonConvert.DeserializeObject(content);
 
             var repos = new List<GithubRepoInfo>();

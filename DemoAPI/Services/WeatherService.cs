@@ -3,7 +3,6 @@ using AggregatorAPI.Models;
 using AggregatorAPI.Models.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
-using System;
 
 namespace AggregatorAPI.Services;
 

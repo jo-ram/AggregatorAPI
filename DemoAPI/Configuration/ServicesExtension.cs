@@ -15,6 +15,7 @@ public static class ServicesExtension
         services.AddTransient<IAggregationService, AggregationService>();
         services.AddTransient<IMemoryCacheService, MemoryCacheService>();
         services.AddTransient<IRetryPolicy, RetryPolicy>();
+        services.AddSingleton<IStatisticsService, StatisticsService>();
         return services;
     }
 }

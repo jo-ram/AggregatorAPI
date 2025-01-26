@@ -11,7 +11,7 @@ public class NewsInfo
     public int TotalResults { get; set; }
 
     [JsonPropertyName("articles")]
-    public List<Article> Articles { get; set; }
+    public List<Article> Articles { get; set; } = new List<Article>();
 }
 
 

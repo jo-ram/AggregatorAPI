@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatorAPI", "DemoAPI\AggregatorAPI.csproj", "{5599181A-7DC2-4131-B809-028756D1E26D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.API", "DemoAPI\Aggregator.API.csproj", "{5599181A-7DC2-4131-B809-028756D1E26D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregationApiTests", "AggregationApiTests\AggregationApiTests.csproj", "{68F83AF6-7962-4A3B-B521-9D95D143C7B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatorApi.Tests", "AggregationApiTests\AggregatorApi.Tests.csproj", "{68F83AF6-7962-4A3B-B521-9D95D143C7B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Service", "AggregatorService\Aggregator.Service.csproj", "{0DDCCDF2-641A-4F78-BD16-6AB7F141377A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{68F83AF6-7962-4A3B-B521-9D95D143C7B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68F83AF6-7962-4A3B-B521-9D95D143C7B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68F83AF6-7962-4A3B-B521-9D95D143C7B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DDCCDF2-641A-4F78-BD16-6AB7F141377A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DDCCDF2-641A-4F78-BD16-6AB7F141377A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DDCCDF2-641A-4F78-BD16-6AB7F141377A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DDCCDF2-641A-4F78-BD16-6AB7F141377A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

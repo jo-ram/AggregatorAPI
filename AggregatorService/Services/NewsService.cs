@@ -31,6 +31,11 @@ public class NewsService : INewsService
         _statisticsService = statisticsService;
     }
 
+    public HttpClient HttpClient { get; }
+    public IOptions<NewsApiSettings> Options { get; }
+    public IMemoryCacheService Object1 { get; }
+    public IRetryPolicy Object2 { get; }
+
     public async Task<NewsInfo> GetNewsAsync(string query, string category = null, string language = "en")
     {
         var stopwatch = Stopwatch.StartNew();

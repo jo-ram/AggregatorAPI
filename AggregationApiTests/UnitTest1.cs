@@ -32,7 +32,8 @@ namespace AggregationApiTests
                 new HttpClient(),
                 Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }),
                 mockCache.Object,
-                mockRetryPolicy.Object
+                mockRetryPolicy.Object,
+                new StatisticsService()
             );
 
             // Act
@@ -82,7 +83,8 @@ namespace AggregationApiTests
                 httpClient,
                 Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }),
                 mockCache.Object,
-                mockRetryPolicy.Object
+                mockRetryPolicy.Object,
+                new StatisticsService()
             );
 
             // Act
@@ -97,30 +99,31 @@ namespace AggregationApiTests
         }
 
         [Fact]
-        public async Task GetNewsAsync_ReturnsDefault_WhenApiFails()
-        {
-            // Arrange
-            var mockCache = new Mock<IMemoryCacheService>();
-            mockCache.Setup(c => c.Retrieve<NewsInfo>(It.IsAny<string>())).Returns((NewsInfo)null);
+    public async Task GetNewsAsync_ReturnsDefault_WhenApiFails()
+    {
+        // Arrange
+        var mockCache = new Mock<IMemoryCacheService>();
+        mockCache.Setup(c => c.Retrieve<NewsInfo>(It.IsAny<string>())).Returns((NewsInfo)null);
 
-            var mockRetryPolicy = new Mock<IRetryPolicy>();
-            mockRetryPolicy
-                .Setup(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()))
-                .ThrowsAsync(new HttpRequestException("API failure"));
+        var mockRetryPolicy = new Mock<IRetryPolicy>();
+        mockRetryPolicy
+            .Setup(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()))
+            .ThrowsAsync(new HttpRequestException("API failure"));
 
-            var service = new NewsService(
-                new HttpClient(),
-                Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }),
-                mockCache.Object,
-                mockRetryPolicy.Object
-            );
+        var service = new NewsService(
+            new HttpClient(), 
+            Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }), 
+            mockCache.Object, 
+            mockRetryPolicy.Object,
+            new StatisticsService()
+        );
 
-            // Act
-            var result = await service.GetNewsAsync("Election");
+        // Act
+        var result = await service.GetNewsAsync("Election");
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result.Articles); // No articles since the API failed
-        }
+        // Assert
+        Assert.NotNull(result);
+        Assert.Empty(result.Articles); // No articles since the API failed
+    }
     }
 }

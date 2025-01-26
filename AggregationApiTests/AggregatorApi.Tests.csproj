@@ -18,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DemoAPI\AggregatorAPI.csproj" />
+    <ProjectReference Include="..\AggregatorService\Aggregator.Service.csproj" />
+    <ProjectReference Include="..\DemoAPI\Aggregator.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

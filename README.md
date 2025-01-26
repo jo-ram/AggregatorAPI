@@ -10,10 +10,16 @@ This endpoint retrieves aggregated data from multiple sources, including:
 The response contains data combined from all three sources.
 
 Query Parameters
+
+
 searchQueryParam    	The search query for fetching news articles (technology, sports etc)
+
 city	                The city name for retrieving weather data.	New York, London
+
 githubOrgRepo	        The name of the GitHub organization to fetch repository data for (dotnet, adobe, Netflix etc)
+
 shortBy (optional)	  Determines the sorting order for news articles. Use asc for ascending or desc for descending.	asc, desc
+
 filter	(optional)    Filter condition for the news articles	(author eq 'Lloyd Lee' or sourceName eq 'BBC News')
 
 

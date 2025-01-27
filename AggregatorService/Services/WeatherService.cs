@@ -33,12 +33,10 @@ public class WeatherService : IWeatherService
     {
         try
         {
-            //Set default value in case no input from user 
             if (string.IsNullOrEmpty(city)) city = "Greece";
 
             var cacheKey = $"Weather_{city.ToLower()}";
 
-            //Retrive from cache if key exists 
             var cachedWeather = _memoryCacheService.Retrieve<WeatherInfo>(cacheKey);
             if (cachedWeather != null)
                 return Result<WeatherInfo>.ActionSuccessful(cachedWeather, 200);

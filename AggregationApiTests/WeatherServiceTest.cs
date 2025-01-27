@@ -121,6 +121,7 @@ public class WeatherServiceTests
     {
         var city = "Berlin";
         var cacheKey = $"Weather_{city.ToLower()}";
+
         _memoryCacheServiceMock.Setup(m => m.Retrieve<WeatherInfo>(cacheKey)).Returns((WeatherInfo)null);
 
         _retryPolicyMock.Setup(r => r.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()))
@@ -129,8 +130,10 @@ public class WeatherServiceTests
         var result = await _weatherService.GetCurrentWeatherAsync(city);
 
         Assert.NotNull(result);
-        Assert.Null(result.Data.City);
-        Assert.Equal(0.0, result.Data.Temperature);
-        Assert.Null(result.Data.WeatherDescription);
+        Assert.False(result.Success); 
+        Assert.Null(result.Data); 
+        Assert.NotNull(result.Info); 
+        Assert.NotNull(result.Info.Exception); 
+        Assert.IsType<HttpRequestException>(result.Info.Exception);
     }
 }

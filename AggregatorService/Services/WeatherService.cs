@@ -45,7 +45,6 @@ public class WeatherService : IWeatherService
             var requestUrl = $"{_settings.BaseUrl}?q={city}&appid={_settings.ApiKey}&units=metric";
             var stopwatch = Stopwatch.StartNew();
             HttpResponseMessage result = await _retryPolicy.RetryHttpRequestStandardAsync(requestUrl, async () => await _httpClient.GetAsync(requestUrl));
-            //var response = await _httpClient.GetAsync(requestUrl);
             stopwatch.Stop();
             _statisticsService.LogRequest("WeatherService", stopwatch.ElapsedMilliseconds);
 

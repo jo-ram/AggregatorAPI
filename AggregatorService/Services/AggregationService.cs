@@ -47,8 +47,12 @@ public class AggregationService : IAggregationService
             if (!string.IsNullOrEmpty(shortBy))
             {
                 articles = shortBy.Equals("asc", StringComparison.OrdinalIgnoreCase) ?
-                    articles.OrderBy(article => DateTime.Parse(article.PublishedAt)).ToList() :
-                    articles.OrderByDescending(article => DateTime.Parse(article.PublishedAt)).ToList();
+                    articles.OrderBy(a => DateTime.Parse(a.PublishedAt)).ToList() :
+                    articles.OrderByDescending(a => DateTime.Parse(a.PublishedAt)).ToList();
+
+                githubResult = shortBy.Equals("asc", StringComparison.OrdinalIgnoreCase) ?
+                    githubResult.OrderBy(r => DateTime.Parse(r.CreatedOn)).ToList() :
+                    githubResult.OrderByDescending(r => DateTime.Parse(r.CreatedOn)).ToList();
             }
 
             return new AggregatedResult

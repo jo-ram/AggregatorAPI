@@ -15,7 +15,6 @@ namespace AggregationApiTests
         [Fact]
         public async Task GetNewsAsync_ReturnsCachedData_WhenAvailable()
         {
-            // Arrange
             var cachedNews = new NewsInfo
             {
                 Status = "ok",
@@ -36,21 +35,17 @@ namespace AggregationApiTests
                 new StatisticsService()
             );
 
-            // Act
             var result = await service.GetNewsAsync("Election");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal("Cached News", result.Articles[0].Title);
 
-            // Verify that the API was never called because of caching
             mockRetryPolicy.Verify(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()), Times.Never);
         }
 
         [Fact]
         public async Task GetNewsAsync_CallsRetryPolicy_WhenNoCache()
         {
-            // Arrange
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             var fakeResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -87,43 +82,37 @@ namespace AggregationApiTests
                 new StatisticsService()
             );
 
-            // Act
             var result = await service.GetNewsAsync("Election");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal("API News", result.Articles[0].Title);
 
-            // Verify that the retry policy was invoked
             mockRetryPolicy.Verify(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()), Times.Once);
         }
 
         [Fact]
-    public async Task GetNewsAsync_ReturnsDefault_WhenApiFails()
-    {
-        // Arrange
-        var mockCache = new Mock<IMemoryCacheService>();
-        mockCache.Setup(c => c.Retrieve<NewsInfo>(It.IsAny<string>())).Returns((NewsInfo)null);
+        public async Task GetNewsAsync_ReturnsDefault_WhenApiFails()
+        {
+            var mockCache = new Mock<IMemoryCacheService>();
+            mockCache.Setup(c => c.Retrieve<NewsInfo>(It.IsAny<string>())).Returns((NewsInfo)null);
 
-        var mockRetryPolicy = new Mock<IRetryPolicy>();
-        mockRetryPolicy
-            .Setup(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()))
-            .ThrowsAsync(new HttpRequestException("API failure"));
+            var mockRetryPolicy = new Mock<IRetryPolicy>();
+            mockRetryPolicy
+                .Setup(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()))
+                .ThrowsAsync(new HttpRequestException("API failure"));
 
-        var service = new NewsService(
-            new HttpClient(), 
-            Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }), 
-            mockCache.Object, 
-            mockRetryPolicy.Object,
-            new StatisticsService()
-        );
+            var service = new NewsService(
+                new HttpClient(), 
+                Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }), 
+                mockCache.Object, 
+                mockRetryPolicy.Object,
+                new StatisticsService()
+            );
 
-        // Act
-        var result = await service.GetNewsAsync("Election");
+            var result = await service.GetNewsAsync("Election");
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.Empty(result.Articles); // No articles since the API failed
-    }
+            Assert.NotNull(result);
+            Assert.Empty(result.Articles); 
+        }
     }
 }

@@ -45,7 +45,6 @@ public class GithubService : IGithubService
             HttpResponseMessage result = await _retryPolicy.RetryHttpRequestStandardAsync(requestUrl, async () => await _httpClient.GetAsync(requestUrl));
             stopwatch.Stop();
             _statisticsService.LogRequest("GithubService", stopwatch.ElapsedMilliseconds);
-            //var response = await _httpClient.GetAsync(requestUrl);
             result.EnsureSuccessStatusCode();
 
             var content = await result.Content.ReadAsStringAsync();

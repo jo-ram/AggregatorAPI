@@ -48,7 +48,6 @@ public class NewsService : INewsService
             HttpResponseMessage result = await _retryPolicy.RetryHttpRequestStandardAsync(url, async () => await _httpClient.GetAsync(url));
             stopwatch.Stop();
             _statisticsService.LogRequest("NewsService", stopwatch.ElapsedMilliseconds);
-            //var response = await _httpClient.GetAsync(url);
             result.EnsureSuccessStatusCode();
 
             var content = await result.Content.ReadAsStringAsync();

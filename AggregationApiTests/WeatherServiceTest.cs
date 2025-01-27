@@ -51,7 +51,6 @@ public class WeatherServiceTests
 
         var result = await _weatherService.GetCurrentWeatherAsync(city);
 
-        // Assert
         Assert.Equal(cachedWeather.City, result.City);
         Assert.Equal(cachedWeather.Temperature, result.Temperature);
         Assert.Equal(cachedWeather.WeatherDescription, result.WeatherDescription);

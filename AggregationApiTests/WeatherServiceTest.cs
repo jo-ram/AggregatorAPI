@@ -51,9 +51,9 @@ public class WeatherServiceTests
 
         var result = await _weatherService.GetCurrentWeatherAsync(city);
 
-        Assert.Equal(cachedWeather.City, result.City);
-        Assert.Equal(cachedWeather.Temperature, result.Temperature);
-        Assert.Equal(cachedWeather.WeatherDescription, result.WeatherDescription);
+        Assert.Equal(cachedWeather.City, result.Data.City);
+        Assert.Equal(cachedWeather.Temperature, result.Data.Temperature);
+        Assert.Equal(cachedWeather.WeatherDescription, result.Data.WeatherDescription);
         _memoryCacheServiceMock.Verify(m => m.Retrieve<WeatherInfo>(cacheKey), Times.Once);
         _statisticsServiceMock.Verify(s => s.LogRequest(It.IsAny<string>(), It.IsAny<long>()), Times.Never);
     }
@@ -82,9 +82,9 @@ public class WeatherServiceTests
 
         var result = await _weatherService.GetCurrentWeatherAsync(city);
 
-        Assert.Equal(city, result.City);
-        Assert.Equal(15.5, result.Temperature);
-        Assert.Equal("Sunny", result.WeatherDescription);
+        Assert.Equal(city, result.Data.City);
+        Assert.Equal(15.5, result.Data.Temperature);
+        Assert.Equal("Sunny", result.Data.WeatherDescription);
         _memoryCacheServiceMock.Verify(m => m.Add(cacheKey, It.IsAny<WeatherInfo>()), Times.Once);
         _statisticsServiceMock.Verify(s => s.LogRequest("WeatherService", It.IsAny<long>()), Times.Once);
     }
@@ -129,8 +129,8 @@ public class WeatherServiceTests
         var result = await _weatherService.GetCurrentWeatherAsync(city);
 
         Assert.NotNull(result);
-        Assert.Null(result.City);
-        Assert.Equal(0.0, result.Temperature);
-        Assert.Null(result.WeatherDescription);
+        Assert.Null(result.Data.City);
+        Assert.Equal(0.0, result.Data.Temperature);
+        Assert.Null(result.Data.WeatherDescription);
     }
 }

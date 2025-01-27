@@ -19,12 +19,13 @@ public class AggregationController : ControllerBase
         [FromQuery] string city, 
         [FromQuery] string githubOrgRepo, 
         [FromQuery] string shortBy = null, 
-        [FromQuery] string filter = null)
+        [FromQuery] string filterArticles = null,
+        [FromQuery] string filterRepos = null)
     {
         try
         {
-            var aggregatedData = await aggregationService.GetAggregatedDataAsync(city, searchQueryParam, shortBy, filter, githubOrgRepo);
-            return Ok(aggregatedData);
+            var aggregatedData = await aggregationService.GetAggregatedDataAsync(city, searchQueryParam, shortBy, filterArticles, githubOrgRepo, filterRepos);
+            return Ok(aggregatedData.Data);
         }
         catch (Exception ex)
         {

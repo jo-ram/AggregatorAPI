@@ -1,4 +1,5 @@
-﻿using AggregatorAPI.Interfaces;
+﻿using Aggregator.Service.Models;
+using AggregatorAPI.Interfaces;
 using AggregatorAPI.Models;
 using AggregatorAPI.Models.Settings;
 using Microsoft.Extensions.Options;
@@ -30,13 +31,13 @@ public class GithubService : IGithubService
         _statisticsService = statisticsService;
     }
 
-    public async Task<List<GithubRepoInfo>> GetGithubReposAsync(string githubOrg)
+    public async Task<Result<List<GithubRepoInfo>>> GetGithubReposAsync(string githubOrg)
     {
         try
         {
             var cacheKey = !string.IsNullOrEmpty(githubOrg) ? $"GitHubRepos_{githubOrg}" : $"GitHubRepos_dotnet";
             var cachedRepos = _memoryCacheService.Retrieve<List<GithubRepoInfo>>(cacheKey);
-            if (cachedRepos != null) return cachedRepos;
+            if (cachedRepos != null) return Result<List<GithubRepoInfo>>.ActionSuccessful(cachedRepos, 200); //return cachedRepos;
 
             var requestUrl = !string.IsNullOrEmpty(githubOrg)
             ? _githubApiSettings.BaseUrl.Replace("{org}", githubOrg) : _githubApiSettings.BaseUrl.Replace("{org}", "dotnet");
@@ -64,11 +65,11 @@ public class GithubService : IGithubService
             }
 
             _memoryCacheService.Add(cacheKey, repos);
-            return repos;
+            return Result<List<GithubRepoInfo>>.ActionSuccessful(repos, 200);
         }
         catch (Exception ex)
         {
-            return new List<GithubRepoInfo>();
+            return Result<List<GithubRepoInfo>>.Exception(500, ex);
         }
     }
 }

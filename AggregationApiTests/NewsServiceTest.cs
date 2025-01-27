@@ -29,7 +29,7 @@ namespace AggregationApiTests
 
             var service = new NewsService(
                 new HttpClient(),
-                Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }),
+                Options.Create(new NewsApiSettings { BaseUrl = "https://newsapi.org/v2/everything", ApiKey = "42d3d71779e64dfcb5928138933d1111" }),
                 mockCache.Object,
                 mockRetryPolicy.Object,
                 new StatisticsService()
@@ -38,7 +38,7 @@ namespace AggregationApiTests
             var result = await service.GetNewsAsync("Election");
 
             Assert.NotNull(result);
-            Assert.Equal("Cached News", result.Articles[0].Title);
+            Assert.Equal("Cached News", result.Data.Articles[0].Title);
 
             mockRetryPolicy.Verify(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()), Times.Never);
         }
@@ -76,7 +76,7 @@ namespace AggregationApiTests
 
             var service = new NewsService(
                 httpClient,
-                Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }),
+                Options.Create(new NewsApiSettings { BaseUrl = "https://newsapi.org/v2/everything", ApiKey = "42d3d71779e64dfcb5928138933d1111" }),
                 mockCache.Object,
                 mockRetryPolicy.Object,
                 new StatisticsService()
@@ -85,7 +85,7 @@ namespace AggregationApiTests
             var result = await service.GetNewsAsync("Election");
 
             Assert.NotNull(result);
-            Assert.Equal("API News", result.Articles[0].Title);
+            Assert.Equal("API News", result.Data.Articles[0].Title);
 
             mockRetryPolicy.Verify(p => p.RetryHttpRequestStandardAsync(It.IsAny<string>(), It.IsAny<Func<Task<HttpResponseMessage>>>()), Times.Once);
         }
@@ -102,9 +102,9 @@ namespace AggregationApiTests
                 .ThrowsAsync(new HttpRequestException("API failure"));
 
             var service = new NewsService(
-                new HttpClient(), 
-                Options.Create(new NewsApiSettings { BaseUrl = "http://example.com", ApiKey = "fake-key" }), 
-                mockCache.Object, 
+                new HttpClient(),
+                Options.Create(new NewsApiSettings { BaseUrl = "https://newsapi.org/v2/everything", ApiKey = "42d3d71779e64dfcb5928138933d1111" }),
+                mockCache.Object,
                 mockRetryPolicy.Object,
                 new StatisticsService()
             );
@@ -112,7 +112,11 @@ namespace AggregationApiTests
             var result = await service.GetNewsAsync("Election");
 
             Assert.NotNull(result);
-            Assert.Empty(result.Articles); 
+            Assert.False(result.Success); 
+            Assert.Null(result.Data); 
+            Assert.NotNull(result.Info); 
+            Assert.NotNull(result.Info.Exception); 
+            Assert.Equal("API failure", result.Info.Exception.Message); 
         }
     }
 }

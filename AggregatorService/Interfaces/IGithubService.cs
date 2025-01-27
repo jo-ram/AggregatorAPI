@@ -1,8 +1,9 @@
-﻿using AggregatorAPI.Models;
+﻿using Aggregator.Service.Models;
+using AggregatorAPI.Models;
 
 namespace AggregatorAPI.Interfaces;
 
 public interface IGithubService
 {
-    Task<List<GithubRepoInfo>> GetGithubReposAsync(string githubOrg);
+    Task<Result<List<GithubRepoInfo>>> GetGithubReposAsync(string githubOrg);
 }

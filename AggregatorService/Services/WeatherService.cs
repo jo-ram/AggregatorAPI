@@ -1,4 +1,5 @@
-﻿using AggregatorAPI.Interfaces;
+﻿using Aggregator.Service.Models;
+using AggregatorAPI.Interfaces;
 using AggregatorAPI.Models;
 using AggregatorAPI.Models.Settings;
 using Microsoft.Extensions.Options;
@@ -28,7 +29,7 @@ public class WeatherService : IWeatherService
         _statisticsService = statistics;
     }
 
-    public async Task<WeatherInfo> GetCurrentWeatherAsync(string city)
+    public async Task<Result<WeatherInfo>> GetCurrentWeatherAsync(string city)
     {
         try
         {
@@ -40,7 +41,8 @@ public class WeatherService : IWeatherService
             //Retrive from cache if key exists 
             var cachedWeather = _memoryCacheService.Retrieve<WeatherInfo>(cacheKey);
             if (cachedWeather != null)
-                return cachedWeather;
+                return Result<WeatherInfo>.ActionSuccessful(cachedWeather, 200);
+                //return cachedWeather;
 
             var requestUrl = $"{_settings.BaseUrl}?q={city}&appid={_settings.ApiKey}&units=metric";
             var stopwatch = Stopwatch.StartNew();
@@ -62,14 +64,16 @@ public class WeatherService : IWeatherService
                     WeatherDescription = weatherData["weather"]?[0]?["description"]?.ToString()
                 };
                 _memoryCacheService.Add(cacheKey, weatherResult);
-                return weatherResult;
+                return Result<WeatherInfo>.ActionSuccessful(weatherResult, 200);
+                //return weatherResult;
             }
 
-            return new WeatherInfo();
+            return Result<WeatherInfo>.ActionFailed(null, 204, new Info { Message = "No weather data found." });
+            //return new WeatherInfo();
         }
         catch (Exception ex)
         {
-            return new WeatherInfo();
+            return Result<WeatherInfo>.Exception(500, ex);
         }
     }
 }

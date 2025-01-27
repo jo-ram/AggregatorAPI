@@ -1,4 +1,5 @@
-﻿using AggregatorAPI.Interfaces;
+﻿using Aggregator.Service.Models;
+using AggregatorAPI.Interfaces;
 using AggregatorAPI.Models;
 using AggregatorAPI.Models.Settings;
 using Microsoft.Extensions.Caching.Memory;
@@ -31,7 +32,7 @@ public class NewsService : INewsService
         _statisticsService = statisticsService;
     }
 
-    public async Task<NewsInfo> GetNewsAsync(string query, string category = null, string language = "en")
+    public async Task<Result<NewsInfo>> GetNewsAsync(string query, string category = null, string language = "en")
     {
         try
         {
@@ -39,7 +40,7 @@ public class NewsService : INewsService
             var cacheKey = $"News_{query}";
 
             var cachedNews = _memoryCacheService.Retrieve<NewsInfo>(cacheKey);
-            if (cachedNews != null) return cachedNews;
+            if (cachedNews != null) return Result<NewsInfo>.ActionSuccessful(cachedNews, 200); //return cachedNews;
 
             var url = $"{_settings.BaseUrl}?q={query}&language={language}&apiKey={_settings.ApiKey}";
             if (!string.IsNullOrEmpty(category)) url += $"&category={category}";
@@ -59,13 +60,14 @@ public class NewsService : INewsService
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(3)
                 };
                 _memoryCacheService.Add(cacheKey, news, cacheOptions);
-                return news;
+                return Result<NewsInfo>.ActionSuccessful(news, 200);
+                //return news;
             }
-            return new NewsInfo();
+            return Result<NewsInfo>.ActionFailed(null, 204, new Info { Message = "No news data found." });
         }
         catch (Exception ex)
         {
-            return new NewsInfo();
+            return Result<NewsInfo>.Exception(500, ex);
         }
     }
 }
